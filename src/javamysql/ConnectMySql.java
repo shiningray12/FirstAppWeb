@@ -16,7 +16,8 @@ public class ConnectMySql {
 	public ConnectMySql() {
 		
 	}
-	String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy";
+	String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useUnicode=true&characterEncoding=euckr&characterSetResults=euckr";
+								   
 	String dbId = "cdyadmin";
 	String dbPw = "dragon12^^";
 	Connection conn = null;
@@ -31,14 +32,14 @@ public class ConnectMySql {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
-			sql = "select id from example where id = ?";
+			sql = "select id from example where id = ?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				returns = "가입불가";
 			}else {
-				sql2 = "insert into example values(?, ?)";
+				sql2 = "insert into example values(?, ?);";
 				pstmt2 = conn.prepareStatement(sql2);
 				pstmt2.setString(1, id);
 				pstmt2.setString(2, pw);

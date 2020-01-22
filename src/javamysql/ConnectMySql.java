@@ -16,7 +16,7 @@ public class ConnectMySql {
 	public ConnectMySql() {
 		
 	}
-	String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useUnicode=true&characterEncoding=euckr&characterSetResults=euckr";
+	String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useSLL=false";
 								   
 	String dbId = "cdyadmin";
 	String dbPw = "dragon12^^";
@@ -26,24 +26,24 @@ public class ConnectMySql {
 	ResultSet rs = null;
 	String sql = "";
 	String sql2 = "";
-	String returns = "a";
-	
+	String returns = "";
+	String returns2 = "";
 	public String connectionDB(String id, String pw) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
-			sql = "select id from example where id = ?;";
+			sql = "SELECT id FROM dragoncdy.EXAMPLE where id = ?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				returns = "가입불가";
 			}else {
-				sql2 = "insert into example values(?, ?);";
+				sql2 = "insert into dragoncdy.EXAMPLE values(?, ?);";
 				pstmt2 = conn.prepareStatement(sql2);
 				pstmt2.setString(1, id);
 				pstmt2.setString(2, pw);
-				pstmt2.executeQuery();
+				pstmt2.executeUpdate();
 				returns = "가입";
 			}
 		}catch(Exception e) {
@@ -51,7 +51,35 @@ public class ConnectMySql {
 		}finally {
 			if(pstmt2 != null)try {pstmt2.close();}catch(SQLException ex) {}
 			if(pstmt != null)try {pstmt.close();}catch(SQLException ex) {}
+			if(conn != null)try {conn.close();}catch(SQLException ex) {}
+			if(rs != null)try {rs.close();}catch(SQLException ex) {}
 		}
 		return returns;
+	}
+	public String logindb(String id, String pwd) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
+			sql = "select id, pw from dragoncdy.EXAMPLE where id=? and pw=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				if(rs.getString("id").equals(id)&&rs.getString("pw").equals(pwd)) {
+					returns2 = "true";
+				}else {
+					returns2 = "false";
+				}
+			}else{
+				returns2 = "noId";
+			}
+		}catch(Exception e) {
+			
+		}finally {if (rs != null)try {rs.close();} catch (SQLException ex) {}
+		if (pstmt != null)try {pstmt.close();} catch (SQLException ex) {}
+		if (conn != null)try {conn.close();} catch (SQLException ex) {}
+		}
+		return returns2;
 	}
 }

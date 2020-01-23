@@ -16,42 +16,46 @@ public class ConnectMySql {
 	public ConnectMySql() {
 		
 	}
-	String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useSLL=false";
+	private String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useUnicode=true&characterEncoding=euckr&characterSetResults=euckr&useSLL=false";
 								   
-	String dbId = "cdyadmin";
-	String dbPw = "dragon12^^";
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	PreparedStatement pstmt2 = null;
-	ResultSet rs = null;
-	String sql = "";
-	String sql2 = "";
+	private String dbId = "cdyadmin";
+	private String dbPw = "dragon12^^";
+	private Connection conn = null;
+	private PreparedStatement pstmt = null;
+	private PreparedStatement pstmt2 = null;
+	private ResultSet rs = null;
+	private String sql = "";
+	private String sql2 = "";
 	String returns = "";
 	String returns2 = "";
+	
+	
 	public String connectionDB(String id, String pw) {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
-			sql = "SELECT id FROM dragoncdy.EXAMPLE where id = ?;";
+			sql = "SELECT id FROM dragoncdy.EXAMPLE where id=?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				returns = "가입불가";
+				if(rs.getString("id").equals(id)){ 
+					returns = "id";
+				}
 			}else {
 				sql2 = "insert into dragoncdy.EXAMPLE values(?, ?);";
 				pstmt2 = conn.prepareStatement(sql2);
 				pstmt2.setString(1, id);
 				pstmt2.setString(2, pw);
 				pstmt2.executeUpdate();
-				returns = "가입";
+				returns = "ok";
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
-			if(pstmt2 != null)try {pstmt2.close();}catch(SQLException ex) {}
 			if(pstmt != null)try {pstmt.close();}catch(SQLException ex) {}
 			if(conn != null)try {conn.close();}catch(SQLException ex) {}
+			if(pstmt2 != null)try {pstmt2.close();}catch(SQLException ex) {}
 			if(rs != null)try {rs.close();}catch(SQLException ex) {}
 		}
 		return returns;
@@ -76,7 +80,8 @@ public class ConnectMySql {
 			}
 		}catch(Exception e) {
 			
-		}finally {if (rs != null)try {rs.close();} catch (SQLException ex) {}
+		}finally {
+		if (rs != null)try {rs.close();} catch (SQLException ex) {}
 		if (pstmt != null)try {pstmt.close();} catch (SQLException ex) {}
 		if (conn != null)try {conn.close();} catch (SQLException ex) {}
 		}

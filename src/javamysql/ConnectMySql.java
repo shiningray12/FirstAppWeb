@@ -87,4 +87,24 @@ public class ConnectMySql {
 		}
 		return returns2;
 	}
+	public String write (String title, String content, String ddate) {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
+			sql = "insert into dragoncdy.TestBoard (title, content, ddate) values(?, ?, ?); ";
+			pstmt2 = conn.prepareStatement(sql);
+			pstmt2.setString(1, title);
+			pstmt2.setString(2, content);
+			pstmt2.setString(3, ddate);
+			pstmt2.executeUpdate();
+			returns = "ok";
+		}catch(Exception e) {
+			
+		}finally {
+			if (rs != null)try {rs.close();} catch (SQLException ex) {}
+			if (pstmt != null)try {pstmt.close();} catch (SQLException ex) {}
+			if (conn != null)try {conn.close();} catch (SQLException ex) {}
+			}
+			return returns2;
+	}
 }

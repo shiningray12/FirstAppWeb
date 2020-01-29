@@ -16,7 +16,7 @@ public class ConnectMySql {
 	public ConnectMySql() {
 		
 	}
-	private String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useUnicode=true&characterEncoding=euckr&characterSetResults=euckr&useSLL=false";
+	private String jdbcUrl = "jdbc:mysql://mydbcdy.c7w7upkmq0xt.ap-northeast-2.rds.amazonaws.com:3306/dragoncdy?useUnicode=true&characterEncoding=euckr&characterSetResults=euckr&useSSL=false";
 								   
 	private String dbId = "cdyadmin";
 	private String dbPw = "dragon12^^";
@@ -91,7 +91,7 @@ public class ConnectMySql {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbcUrl, dbId, dbPw);
-			sql = "insert into dragoncdy.TestBoard (title, content, ddate) values(?, ?, ?); ";
+			sql = "insert into dragoncdy.TestBoard (title, content, ddate) values(?, ?, ?)";
 			pstmt2 = conn.prepareStatement(sql);
 			pstmt2.setString(1, title);
 			pstmt2.setString(2, content);

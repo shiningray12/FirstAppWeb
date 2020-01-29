@@ -7,11 +7,15 @@
 	String title = request.getParameter("title");
 	String content = request.getParameter("content");
 	String ddate = request.getParameter("ddate");
+	String type = request.getParameter("type");
 	
 	ConnectMySql connect = ConnectMySql.getInstance();
+	if(type.equals("add")){
+		String returns = connect.write(title, content, ddate);
+		out.print(returns);
+	}
 	
-	String returns = connect.write(title, content, ddate);
-	out.print(returns);
+	
 %>
 <!DOCTYPE html>
 <html>
